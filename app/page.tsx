@@ -1,63 +1,105 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showText, setShowText] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      setMousePosition({ x, y });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div
+      onClick={() => setShowText((prev) => !prev)}
+      className="flex min-h-screen items-center justify-center overflow-hidden relative"
+      style={{
+        transition: "all 0.3s ease-out",
+        background: `linear-gradient(
+          ${mousePosition.y * 20 + 90}deg,
+          #91a4f9ff 0%,
+          #eeddff 100%
+      )`,
+      }}
+    >
+      <div
+        style={{
+          transform: `translate(${mousePosition.x * -10}px, ${
+            mousePosition.y * -10
+          }px)`,
+        }}
+        className="absolute top-6 right-6 flex gap-4"
+      >
+        <div className="w-12 h-12 rounded-full border-3 border-black bg-blue-200"></div>
+        <div className="w-12 h-12 rounded-full border-3 border-black bg-blue-200"></div>
+        <div className="w-12 h-12 rounded-full border-3 border-black bg-blue-200"></div>
+      </div>
+      <div
+        style={{
+          transform: `translate(${mousePosition.x * -10}px, ${
+            mousePosition.y * -10
+          }px)`,
+        }}
+        className="absolute bottom-6 left-6 flex gap-4"
+      >
+        <div className="w-32 h-12 border-3 border-black bg-green-400 rounded-md"></div>
+      </div>
+      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center relative z-10">
+        <div className="flex gap-8 items-center">
+          <div
+            className="transition-all duration-500 ease-out"
+            style={{
+              transform: `translate(${
+                mousePosition.x * -40 + (showText ? 0 : 150)
+              }px, ${mousePosition.y * -40}px)`,
+            }}
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="/left-arrow.svg"
+              alt="Left Arrow"
+              className="left-arrow"
+              width={165}
+              height={200}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+          <div
+            className="title-container transition-all duration-500 ease-out"
+            style={{
+              transform: `translate(${mousePosition.x * -40}px, ${
+                mousePosition.y * -40
+              }px)`,
+              opacity: showText ? 1 : 0,
+              pointerEvents: showText ? "auto" : "none",
+            }}
           >
-            Documentation
-          </a>
+            <h1 className="title">DevFest</h1>
+            <p className="subtitle">Porto alegre - 2025</p>
+          </div>
+          <div
+            className="transition-all duration-500 ease-out"
+            style={{
+              transform: `translate(${
+                mousePosition.x * -40 + (showText ? 0 : -150)
+              }px, ${mousePosition.y * -40}px)`,
+            }}
+          >
+            <Image
+              src="/right-arrow.svg"
+              alt="Right Arrow"
+              className="right-arrow"
+              width={165}
+              height={200}
+            />
+          </div>
         </div>
       </main>
     </div>
